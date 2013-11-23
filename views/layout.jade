@@ -1,0 +1,91 @@
+!!! 5
+//if lt IE 7
+  <html class="no-js lt-ie9 lt-ie8 lt-ie7">
+//if IE 7
+  <html class="no-js lt-ie9 lt-ie8">
+//if IE 8
+  <html class="no-js lt-ie9">
+//if IE 9
+  <html class="no-js ie9">
+// [if gt IE 9] <!
+html(class="no-js", lang="en")
+  // <![endif]
+  head
+  meta(charset="utf-8")
+  meta(content="IE=edge,chrome=1", http-equiv="X-UA-Compatible")
+  title= title
+  meta(content="", name="description")
+  meta(content="width=device-width", name="viewport")
+
+  meta(content="", name="og:title")
+  meta(content="", name="og:image")
+  meta(content="", name="og:site_name")
+  meta(content="", name="og:description")
+
+  //  debug only:
+  // script(src="http://fbug.googlecode.com/svn/lite/branches/firebug1.4/content/firebug-lite-dev.js")
+
+  script.
+    ;(function(){var h=document.getElementsByTagName('html')[0];h.className=h.className.replace(/no-js/, '');}());
+
+  link(href="/images/favicon.ico", rel="shortcut icon")
+  link(href="/images/apple-touch-icons/icon.png", rel="apple-touch-icon")
+  link(href="/images/apple-touch-icons/72x72.png", rel="apple-touch-icon", sizes="72x72")
+  link(href="/images/apple-touch-icons/114x114.png", rel="apple-touch-icon", sizes="114x114")
+  link(href="/bower_components/normalize-css/normalize.css", rel="stylesheet")
+
+  // (/public)/styles/style.css
+  link(href="/styles/style.css", rel="stylesheet")
+  // 
+
+
+  // [if lt IE 9]
+    script(src='/bower_components/html5shiv/dist/html5shiv.js')
+    script(src="/bower_components/es5-shim/es5-shim.js")
+    script(src="/bower_components/json3/lib/json3.min.js")
+
+  script(src="/bower_components/modernizr/modernizr.js").
+    if(navigator.userAgent.match(/iPhone/i)||navigator.userAgent.match(/iPad/i)) document.write("<link rel='stylesheet' type='text/css' href='/css/iosfix.css'>");
+
+body(ng-app="")
+  div#fb-root
+  // [if lt IE 7]
+    p.browsehappy
+      | You are using an
+      strong outdated
+      | browser. Please
+      a(href="http://browsehappy.com/") upgrade your browser
+      | to improve your experience.
+
+  div(error-dialog)
+
+  #wrapper
+    header(header)
+    .content(data-ng-view)
+      block content
+
+    footer(footer)
+
+  //- Google Analytics: change UA-XXXXX-X to our site's ID
+  script.
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-XXXXX-X');
+    ga('send', 'pageview');
+
+
+  script(src="/bower_components/jquery/jquery.js")
+  script(src="/bower_components/underscore/underscore-min.js")
+  script(src="/bower_components/angular/angular.js")
+
+  // build Angular modules
+  script(src="/bower_components/angular-route/angular-route.js")
+  script(src="/bower_components/angular-resource/angular-resource.js")
+  script(src="/bower_components/angular-cookies/angular-cookies.js")
+  script(src="/bower_components/angular-sanitize/angular-sanitize.js")
+  script(src="/bower_components/angular-animate/angular-animate.js")
+  script(src="/bower_components/angular-easyfb/angular-easyfb.js")
+  // endbuild Angular modules endbuild
+  
+  // browserify bundle
+  script(src="scripts/z-bundle.js")
+  // endbuild
