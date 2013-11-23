@@ -1,0 +1,3 @@
+# Grunt boilerplate for projects using Node, Angular, Browserify, Jade and Stylus including LiveReload and Nodemon
+
+What's awesome about this is that you can develop a node app, and run `grunt server` like you would with Yeoman generator, the connect server will handle the static files and inject the live reload, but requests will get proxied to the Node app, so when you update the server code, it will reload too !
