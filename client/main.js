@@ -1,1 +1,1 @@
-var hey;
+var hey = 'further testing';

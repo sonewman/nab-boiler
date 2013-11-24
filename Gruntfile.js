@@ -12,6 +12,7 @@ module.exports = function (grunt) {
     }
     , NODE_SERVER_PORT = 3000
     , MAIN_SCRIPT = 'main.js'
+    , MAIN_SCRIPT_OUT = 'z-bundle.js'
 
 
   //  under the hood config
@@ -67,23 +68,29 @@ module.exports = function (grunt) {
     }
 
     //  node inspector
-    , 'node-inspector': {
-      custom: {
-        options: {
-          'web-port': 1337
-          , 'web-host': 'localhost'
-          , 'debug-port': 5857
-          , 'save-live-edit': true
-        }
-      }
-    }
+    // , 'node-inspector': {
+    //   custom: {
+    //     options: {
+    //       'web-port': 1337
+    //       , 'web-host': '0.0.0.0'
+    //       , 'debug-port': 5857
+    //       , 'save-live-edit': true
+    //     }
+    //   }
+    // }
+
+    // , open: {
+    //   server: { url: 'http://<%= connect.livereload.options.hostname %>:<%= connect.livereload.options.port %>', app:'Google Chrome' }
+    // }
 
     //  declare concurrent tasks
     , concurrent: {
       dev: {
         tasks: [
-          'node-inspector'
-          , 'nodemon'
+          // 'node-inspector'
+          // , 
+          'nodemon'
+          // , 'open'
           , 'watch'
         ]
         , options: {
@@ -94,14 +101,28 @@ module.exports = function (grunt) {
 
     //  connect server
     , connect: {
+      // options: {
+      //   port: 9090
+      //   , hostname: '0.0.0.0'
+      // }
+      // , 
       livereload: {
         options: {
           port: 9090
           , hostname: '0.0.0.0'
-          , middleware: function (connect) {
+          ,
+          middleware: function (connect) {
             return [
               lrSnippet
               , mountFolder(connect, 'public')
+              , function (req, res, next) {
+                //  strip annoying header which
+                //  stops the page from being rendered
+                //  not very helpful in development
+                if (req.headers['if-none-match'])
+                  delete req.headers['if-none-match'];
+                next();
+              }
               , proxyRequest
             ];
           }
@@ -111,7 +132,9 @@ module.exports = function (grunt) {
         context: '/'
         , host: '0.0.0.0'
         , port: NODE_SERVER_PORT
+        , https: false
         , changeOrigin: true
+        , xforward: true
       }]
     }
 
@@ -146,7 +169,7 @@ module.exports = function (grunt) {
             , 'brfs'
           ]
         },
-        dest: '<%= yeoman.browserified %>/z-bundle.js'
+        dest: '<%= yeoman.browserified %>/' + MAIN_SCRIPT_OUT
       }
     }
 
@@ -213,7 +236,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('bundle', [
-    // 'clean:browserify',
     'browserify'
     , 'copy:browserified'
     , 'clean:browserified'
