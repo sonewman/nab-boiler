@@ -12,9 +12,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'public/scripts/*.js',
-      'test/mock/**/*.js',
-      'test/spec/**/*.js',
-      'test/spec/**/*.coffee'
+      'test/client/mocks/**/*.js',
+      'test/client/specs/**/*.js',
+      'test/client/specs/**/*.coffee'
     ],
 
     // list of files / patterns to exclude

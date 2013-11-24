@@ -24,6 +24,15 @@ module.exports = function (grunt) {
     return connect.static(require('path').resolve(dir));
   }
 
+  function stripIfNoneMatch (req, res, next) {
+    //  strip annoying header which
+    //  stops the page from being rendered
+    //  not very helpful in development
+    if (req.headers['if-none-match'])
+      delete req.headers['if-none-match'];
+    next();
+  }
+
 
   require('load-grunt-tasks')(grunt);
   require('time-grunt')(grunt);
@@ -100,11 +109,6 @@ module.exports = function (grunt) {
 
     //  connect server
     , connect: {
-      // options: {
-      //   port: 9090
-      //   , hostname: '0.0.0.0'
-      // }
-      // , 
       livereload: {
         options: {
           port: 9090
@@ -114,14 +118,7 @@ module.exports = function (grunt) {
             return [
               lrSnippet
               , mountFolder(connect, 'public')
-              , function (req, res, next) {
-                //  strip annoying header which
-                //  stops the page from being rendered
-                //  not very helpful in development
-                if (req.headers['if-none-match'])
-                  delete req.headers['if-none-match'];
-                next();
-              }
+              , stripIfNoneMatch
               , proxyRequest
             ];
           }
@@ -134,14 +131,7 @@ module.exports = function (grunt) {
             return [
               mountFolder(connect, 'public')
               , mountFolder(connect, 'test')
-              , function (req, res, next) {
-                //  strip annoying header which
-                //  stops the page from being rendered
-                //  not very helpful in development
-                if (req.headers['if-none-match'])
-                  delete req.headers['if-none-match'];
-                next();
-              }
+              , stripIfNoneMatch
               , proxyRequest
             ];
           }
@@ -236,6 +226,13 @@ module.exports = function (grunt) {
         , singleRun: true
       }
     }
+
+    , 'jasmine_node': {
+      specNameMatcher: 'spec' // load only specs containing specNameMatcher
+      , projectRoot: './test/server/specs/'
+      , requirejs: false
+      , forceExit: true
+    }
   });
 
   grunt.registerTask('server', [
@@ -249,13 +246,18 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('test', [
-    //  set up files
-    'styles'
-    , 'bundle'
-    //  set up server stuff
-    , 'configureProxies'
+    'ctest'
+    , 'jasmine'
+  ]);
+
+  grunt.registerTask('ctest', [
+    'bundle'
     , 'connect:test'
     , 'karma'
+  ]);
+
+  grunt.registerTask('jasmine', [
+    'jasmine_node'
   ]);
 
   grunt.registerTask('styles', [
