@@ -67,30 +67,29 @@ module.exports = function (grunt) {
       }
     }
 
-    //  node inspector
-    // , 'node-inspector': {
-    //   custom: {
-    //     options: {
-    //       'web-port': 1337
-    //       , 'web-host': '0.0.0.0'
-    //       , 'debug-port': 5857
-    //       , 'save-live-edit': true
-    //     }
-    //   }
-    // }
+    // node inspector
+    , 'node-inspector': {
+      custom: {
+        options: {
+          'web-port': 1337
+          , 'web-host': '0.0.0.0'
+          , 'debug-port': 5857
+          , 'save-live-edit': true
+        }
+      }
+    }
 
-    // , open: {
-    //   server: { url: 'http://<%= connect.livereload.options.hostname %>:<%= connect.livereload.options.port %>', app:'Google Chrome' }
-    // }
+    , open: {
+      server: { url: 'http://<%= connect.livereload.options.hostname %>:<%= connect.livereload.options.port %>', app:'Google Chrome' }
+    }
 
     //  declare concurrent tasks
     , concurrent: {
       dev: {
         tasks: [
-          // 'node-inspector'
-          // , 
-          'nodemon'
-          // , 'open'
+          'node-inspector'
+          , 'nodemon'
+          , 'open'
           , 'watch'
         ]
         , options: {
@@ -115,6 +114,26 @@ module.exports = function (grunt) {
             return [
               lrSnippet
               , mountFolder(connect, 'public')
+              , function (req, res, next) {
+                //  strip annoying header which
+                //  stops the page from being rendered
+                //  not very helpful in development
+                if (req.headers['if-none-match'])
+                  delete req.headers['if-none-match'];
+                next();
+              }
+              , proxyRequest
+            ];
+          }
+        }
+      }
+      , test: {
+        options: {
+          port: 9898,
+          middleware: function (connect) {
+            return [
+              mountFolder(connect, 'public')
+              , mountFolder(connect, 'test')
               , function (req, res, next) {
                 //  strip annoying header which
                 //  stops the page from being rendered
@@ -223,11 +242,20 @@ module.exports = function (grunt) {
     //  set up files
     'styles'
     , 'bundle'
-
     //  set up server stuff
     , 'configureProxies'
     , 'connect:livereload'
     , 'concurrent'
+  ]);
+
+  grunt.registerTask('test', [
+    //  set up files
+    'styles'
+    , 'bundle'
+    //  set up server stuff
+    , 'configureProxies'
+    , 'connect:test'
+    , 'karma'
   ]);
 
   grunt.registerTask('styles', [
